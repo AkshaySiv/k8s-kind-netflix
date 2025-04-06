@@ -15,9 +15,9 @@ Ensure the following tools are installed on your local machine:
 ## Project Structure
 
 ```
-netflix-clone/
-├── app/                     # Netflix clone app source code
-│   └── Dockerfile
+k8s-kind-netflix/
+├── src /                     # Netflix clone app source code
+│── Dockerfile 
 ├── k8s/
 │   ├── deployment.yaml
 │   └── service.yaml
@@ -34,18 +34,16 @@ kind create cluster --name netflix-clone
 
 ### 2. Build the Docker Image
 
-If you have the app locally:
-
 ```bash
 cd app/
 docker build -t netflix-clone:latest .
 ```
 
-Load the image into the kind cluster:
+<!-- Load the image into the kind cluster:
 
 ```bash
 kind load docker-image netflix-clone:latest --name netflix-clone
-```
+``` -->
 
 ### 3. Deploy to kind
 
@@ -117,10 +115,4 @@ kind delete cluster --name netflix-clone
 
 ## Diagram
 
-Below is a high-level diagram of the local setup:
 
-![Netflix Clone in kind Cluster](./A_diagram_in_the_image_illustrates_a_local_Kuberne.png)
-
-## License
-
-This project is licensed under the MIT License.
