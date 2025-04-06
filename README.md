@@ -3,6 +3,10 @@
 
 This project demonstrates how to deploy a simple **Netflix Clone** application on a local Kubernetes cluster using [`kind`](https://kind.sigs.k8s.io/).
 
+
+![alt text](public/localhost.png)
+
+
 ## Prerequisites
 
 Ensure the following tools are installed on your local machine:
@@ -10,7 +14,7 @@ Ensure the following tools are installed on your local machine:
 - [Docker](https://www.docker.com/)
 - [kind](https://kind.sigs.k8s.io/)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
-- Netflix Clone source code or container image (e.g., hosted on DockerHub or local Dockerfile)
+- Clone [source code](https://github.com/AkshaySiv/k8s-kind-netflix)
 
 ## Project Structure
 
@@ -26,43 +30,37 @@ k8s-kind-netflix/
 
 ## Steps to Deploy
 
-### 1. Create a kind Cluster
+### 1. Create a kind Cluster 
+
+Create multi-node-kind-cluster.yaml file
 
 ```bash
-kind create cluster --name netflix-clone
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
 ```
 
-### 2. Build the Docker Image
+Run below command to create a multinode kind cluster in your local
 
 ```bash
-cd app/
-docker build -t netflix-clone:latest .
+kind create cluster --name multi-node-kind-cluster.yaml
 ```
 
-<!-- Load the image into the kind cluster:
+
+### 2. Build the Docker Image and push to your docker registry
 
 ```bash
-kind load docker-image netflix-clone:latest --name netflix-clone
-``` -->
-
-### 3. Deploy to kind
-
-```bash
-kubectl apply -f k8s/deployment.yaml
-kubectl apply -f k8s/service.yaml
+docker build -t akshaysiv/k8s-kind-netflix:latest .
+docker push akshaysiv/k8s-kind-netflix
 ```
 
-### 4. Access the Application
+![alt text](public/dockerhub.png)
 
-Expose the service locally (using port-forward):
 
-```bash
-kubectl port-forward svc/netflix-clone-service 8080:80
-```
-
-Visit your app at: [http://localhost:8080](http://localhost:8080)
-
-## Kubernetes Manifests
+# Kubernetes Manifests
 
 ### deployment.yaml
 
@@ -83,7 +81,7 @@ spec:
     spec:
       containers:
       - name: netflix-clone
-        image: netflix-clone:latest
+        image: akshaysiv/k8s-kind-netflix:latest
         ports:
         - containerPort: 80
 ```
@@ -105,12 +103,30 @@ spec:
   type: ClusterIP
 ```
 
+### 3. Deploy to kind
+
+```bash
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+```
+
+### 4. Access the Application
+
+Expose the service locally (using port-forward):
+
+```bash
+kubectl port-forward svc/netflix-clone-service 8080:80
+```
+
+Visit your app at: [http://localhost:8080](http://localhost:8080)
+
+
 ## Cleanup
 
 To delete the cluster:
 
 ```bash
-kind delete cluster --name netflix-clone
+kind delete cluster --name multi-node-kind-cluster
 ```
 
 ## Diagram
