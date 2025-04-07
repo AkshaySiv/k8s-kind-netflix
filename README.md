@@ -53,7 +53,7 @@ kind create cluster --name multi-node-kind-cluster.yaml
 ### 2. Build the Docker Image and push to your docker registry
 
 ```bash
-docker build -t akshaysiv/k8s-kind-netflix:latest .
+docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t akshaysiv/k8s-kind-netflix:latest .
 docker push akshaysiv/k8s-kind-netflix
 ```
 
